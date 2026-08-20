@@ -1,0 +1,19 @@
+{
+  "name": "real-time-fund",
+  "compatibility_date": "2026-02-21",
+  "main": "worker/index.js",
+  "secrets": {
+    "required": ["STEAMDT_API_KEY", "CS2_ALLOWED_STEAM_ID"]
+  },
+  "kv_namespaces": [
+    {
+      "binding": "CS2_CACHE",
+      "id": "6d43c498ece046e58d5116a7f6ffad4d"
+    }
+  ],
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/cs2/*"]
+  }
+}
