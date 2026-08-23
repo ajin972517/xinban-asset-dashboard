@@ -816,7 +816,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
       const forceTakeover = options?.forceTakeover || false;
       if (!userId) {
         showToast(`userId 不存在，请重新登录`, 'error');
-        return;
+        return false;
       }
       try {
         setIsSyncing(true);
@@ -871,7 +871,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
                   isPartial
                 }
               });
-              return;
+              return false;
             }
             console.error('增量同步失败，尝试全量同步', rpcError);
             const fullPayload = collectLocalPayload();
@@ -896,7 +896,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
                     isPartial
                   }
                 });
-                return;
+                return false;
               }
               throw fullError;
             }
@@ -923,7 +923,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
                   isPartial
                 }
               });
-              return;
+              return false;
             }
             throw error;
           }
@@ -939,8 +939,10 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
         if (showTip) {
           useModalStore.setState({ successModal: { open: true, message: '已同步云端配置' } });
         }
+        return true;
       } catch (e) {
         console.error('同步云端配置异常', e);
+        return false;
       } finally {
         setIsSyncing(false);
         skipSyncRef.current = false;
@@ -1554,6 +1556,17 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
     await syncUserConfig(userId, true, null, false, { forceTakeover: true });
   }, [syncUserConfig]);
 
+  const prepareForLogout = useCallback(() => {
+    if (syncDebounceRef.current) {
+      clearTimeout(syncDebounceRef.current);
+      syncDebounceRef.current = null;
+    }
+    dirtyKeysRef.current.clear();
+    lastSyncedRef.current = '';
+    userIdRef.current = null;
+    skipSyncRef.current = true;
+  }, []);
+
   return {
     isSyncing,
     lastSyncTime,
@@ -1562,6 +1575,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
     fetchCloudConfig,
     applyCloudConfig,
     handleSyncLocalConfig,
+    prepareForLogout,
     triggerCustomSettingsSync,
     skipSyncRef,
     deviceConflictModalOpenRef,

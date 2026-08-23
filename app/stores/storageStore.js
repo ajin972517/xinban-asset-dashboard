@@ -957,6 +957,90 @@ export const useStorageStore = create((set, get) => ({
   },
 
   /**
+   * 登出时仅清除个人资产数据，保留主题、布局等设备级偏好。
+   * 此方法直接批量写入空值，不触发云同步，避免把空看板覆盖到云端。
+   */
+  clearPersonalData: () => {
+    const emptyGroups = ensurePresetGroups([]);
+    const emptyBankGoldHolding = {
+      bankName: '浙商银行',
+      productName: '财富金积存',
+      grams: 0,
+      totalCost: 0,
+      manualSellPrice: null,
+      manualPriceUpdatedAt: 0
+    };
+    const emptyCs2Settings = { steamId: '', priceBasis: 'sell', pricePlatform: 'auto' };
+    const emptyCs2Inventory = { steamId: '', totalInventoryCount: 0, items: [], fetchedAt: 0 };
+    const emptyCs2Prices = { data: [], fetchedAt: 0, history: [] };
+    const storedValues = {
+      funds: [],
+      tags: [],
+      favorites: [],
+      groups: emptyGroups,
+      collapsedCodes: [],
+      collapsedTrends: [],
+      collapsedValuationTrends: [],
+      collapsedEarnings: [],
+      holdings: {},
+      groupHoldings: {},
+      pendingTrades: [],
+      transactions: {},
+      dcaPlans: {},
+      fundSignalConfigs: {},
+      stocks: [],
+      stockGroups: [],
+      stockTransactions: {},
+      stockDividends: {},
+      bankGoldHolding: emptyBankGoldHolding,
+      cs2Settings: emptyCs2Settings,
+      cs2Inventory: emptyCs2Inventory,
+      cs2Prices: emptyCs2Prices,
+      cs2PurchasePrices: {},
+      cs2Snapshots: [],
+      subscriptions: [],
+      fundDailyEarnings: {},
+      fundDividends: {},
+      fundValuationTimeseries: {}
+    };
+
+    Object.entries(storedValues).forEach(([key, value]) => {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    });
+    window.localStorage.removeItem('localUpdatedAt');
+
+    set({
+      funds: [],
+      groups: emptyGroups,
+      favorites: new Set(),
+      collapsedCodes: new Set(),
+      collapsedTrends: new Set(),
+      collapsedValuationTrends: new Set(),
+      collapsedEarnings: new Set(),
+      holdings: {},
+      groupHoldings: {},
+      pendingTrades: [],
+      transactions: {},
+      dcaPlans: {},
+      fundSignalConfigs: {},
+      stocks: [],
+      stockGroups: [],
+      stockTransactions: {},
+      stockDividends: {},
+      bankGoldHolding: emptyBankGoldHolding,
+      cs2Settings: emptyCs2Settings,
+      cs2Inventory: emptyCs2Inventory,
+      cs2Prices: emptyCs2Prices,
+      cs2PurchasePrices: {},
+      cs2Snapshots: [],
+      subscriptions: [],
+      fundDailyEarnings: {},
+      fundDividends: {},
+      valuationSeries: {}
+    });
+  },
+
+  /**
    * 获取数据（封装 JSON 解析）
    */
   getItem: (key, defaultValue = null) => {
@@ -975,5 +1059,6 @@ export const storageStore = {
   setItem: (key, val) => useStorageStore.getState().setItem(key, val),
   getItem: (key, def) => useStorageStore.getState().getItem(key, def),
   removeItem: (key) => useStorageStore.getState().removeItem(key),
-  clear: () => useStorageStore.getState().clear()
+  clear: () => useStorageStore.getState().clear(),
+  clearPersonalData: () => useStorageStore.getState().clearPersonalData()
 };

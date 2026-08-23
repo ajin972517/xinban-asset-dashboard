@@ -2189,6 +2189,7 @@ export default function HomePage() {
     fetchCloudConfig,
     applyCloudConfig,
     handleSyncLocalConfig,
+    prepareForLogout,
     triggerCustomSettingsSync,
     skipSyncRef,
     deviceConflictModalOpenRef,
@@ -2969,9 +2970,13 @@ export default function HomePage() {
   const handleLogout = async () => {
     isLoggingOutRef.current = true;
     if (!isSupabaseConfigured) {
+      prepareForLogout();
+      storageHelper.clearPersonalData();
+      setFundTagRecords([]);
       setLoginModalOpen(false);
       setLoginInitialError('');
       clearAuthUser();
+      showToast('已退出账号并清除本机个人数据', 'success');
       return;
     }
     try {
@@ -2979,18 +2984,18 @@ export default function HomePage() {
         data: { session }
       } = await supabase.auth.getSession();
       if (session) {
+        const synced = await syncUserConfig(session.user.id, false, null, false, { forceTakeover: true });
+        if (!synced) {
+          throw new Error('云端备份失败，已取消退出并保留本机数据');
+        }
+        prepareForLogout();
         const { error } = await supabase.auth.signOut({ scope: 'local' });
         if (error && error.code !== 'session_not_found') {
           throw error;
         }
+      } else {
+        prepareForLogout();
       }
-    } catch (err) {
-      showToast(err.message, 'error');
-      console.error('登出失败', err);
-    } finally {
-      try {
-        await supabase.auth.signOut({ scope: 'local' });
-      } catch {}
       try {
         const storageKeys = Object.keys(localStorage);
         storageKeys.forEach((key) => {
@@ -3007,9 +3012,16 @@ export default function HomePage() {
           }
         });
       } catch {}
+      storageHelper.clearPersonalData();
+      setFundTagRecords([]);
       setLoginModalOpen(false);
       setLoginInitialError('');
       clearAuthUser();
+      showToast('已退出账号并清除本机个人数据', 'success');
+    } catch (err) {
+      isLoggingOutRef.current = false;
+      showToast(err.message || '退出失败，已保留本机数据', 'error');
+      console.error('登出失败', err);
     }
   };
 
