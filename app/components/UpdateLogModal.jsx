@@ -11,6 +11,16 @@ import { withRetry } from '@/app/lib/asyncHelper';
 
 const LOCAL_RELEASES = [
   {
+    id: 'xinban-2026-08-23',
+    name: 'XinBan 界面优化',
+    tag_name: 'xinban-2026-08-23',
+    published_at: '2026-08-23T12:00:00+08:00',
+    body: [
+      '1. 黄金首页和黄金行情页接入与基金、股票一致的市场指标栏。',
+      '2. 支持复用市场指标轮播、展开列表和个性化设置，并修复黄金内容顶到导航栏下方的问题。'
+    ].join('\n')
+  },
+  {
     id: 'xinban-2026-08-20',
     name: 'v2.4.1 · XinBan',
     tag_name: 'v2.4.1-xinban',

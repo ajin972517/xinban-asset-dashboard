@@ -4908,7 +4908,7 @@ export default function HomePage() {
               />
             </div>
           </div>
-          {shouldShowMarketIndex && assetType !== 'cs2' && assetType !== 'gold' && (
+          {shouldShowMarketIndex && assetType !== 'cs2' && (
             <MarketIndexAccordion
               navbarHeight={navbarHeight}
               onCustomSettingsChange={triggerCustomSettingsSync}
