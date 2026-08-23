@@ -22,7 +22,8 @@ const DEFAULTS = {
   holdingMigrateDialog: { open: false, code: null, name: '', targetGroupId: null },
   cloudConfigModal: { open: false, userId: null, type: null, cloudData: null },
   deviceConflictModal: { open: false, message: '', userId: null, payload: null, isPartial: false },
-  successModal: { open: false, message: '' }
+  successModal: { open: false, message: '' },
+  subscriptionEditorModal: { open: false, subscriptionId: null }
 };
 
 const getClosedModalState = () => ({
@@ -64,6 +65,8 @@ const getClosedModalState = () => ({
   cloudConfigModal: { ...DEFAULTS.cloudConfigModal },
   deviceConflictModal: { ...DEFAULTS.deviceConflictModal },
   successModal: { ...DEFAULTS.successModal },
+  subscriptionEditorModal: { ...DEFAULTS.subscriptionEditorModal },
+  subscriptionDeleteConfirm: null,
   scanModalOpen: false,
   scanConfirmModalOpen: false,
   isScanning: false,
@@ -127,6 +130,8 @@ export const useModalStore = create((set, get) => ({
   cloudConfigModal: { ...DEFAULTS.cloudConfigModal },
   deviceConflictModal: { ...DEFAULTS.deviceConflictModal },
   successModal: { ...DEFAULTS.successModal },
+  subscriptionEditorModal: { ...DEFAULTS.subscriptionEditorModal },
+  subscriptionDeleteConfirm: null,
 
   // ---- Scan modals (migrated from useScanImport) ----
   scanModalOpen: false,

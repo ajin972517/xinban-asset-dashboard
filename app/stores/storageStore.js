@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { isArray, isBoolean, isEqual, isFinite as isFiniteNumber, isFunction, isObject, isString } from 'lodash';
 import { getFundCodesFromTagRecord } from '@/app/lib/fundHelpers';
+import { normalizeSubscriptionExchangeRates, normalizeSubscriptions } from '@/app/lib/subscriptions';
 import { DEFAULT_SORT_RULES, SORT_DISPLAY_MODES } from '@/app/constants';
 
 /**
@@ -97,6 +98,7 @@ const SYNC_KEYS = new Set([
   'stockTransactions',
   'stockDividends',
   'bankGoldHolding',
+  'subscriptions',
   'customSettings',
   'fundDailyEarnings',
   'fundDividends'
@@ -226,6 +228,14 @@ export const useStorageStore = create((set, get) => ({
   },
   cs2PurchasePrices: {},
   cs2Snapshots: [],
+  subscriptions: [],
+  subscriptionExchangeRates: {
+    base: 'CNY',
+    rates: { CNY: 1 },
+    date: '',
+    fetchedAt: 0,
+    source: ''
+  },
   customSettings: {},
   fundDailyEarnings: {},
   fundDividends: {},
@@ -408,6 +418,20 @@ export const useStorageStore = create((set, get) => ({
     if (typeof window !== 'undefined') {
       const parsed = get().getItem('cs2PurchasePrices', {});
       set({ cs2PurchasePrices: parsed && isObject(parsed) && !isArray(parsed) ? parsed : {} });
+    }
+  },
+
+  initSubscriptions: () => {
+    if (typeof window !== 'undefined') {
+      set({ subscriptions: normalizeSubscriptions(get().getItem('subscriptions', [])) });
+    }
+  },
+
+  initSubscriptionExchangeRates: () => {
+    if (typeof window !== 'undefined') {
+      set({
+        subscriptionExchangeRates: normalizeSubscriptionExchangeRates(get().getItem('subscriptionExchangeRates', {}))
+      });
     }
   },
 
@@ -718,6 +742,20 @@ export const useStorageStore = create((set, get) => ({
     get().setItem('cs2Snapshots', JSON.stringify(normalized));
   },
 
+  setSubscriptions: (nextSubscriptions) => {
+    const next = isFunction(nextSubscriptions) ? nextSubscriptions(get().subscriptions) : nextSubscriptions;
+    const normalized = normalizeSubscriptions(next);
+    set({ subscriptions: normalized });
+    get().setItem('subscriptions', JSON.stringify(normalized));
+  },
+
+  setSubscriptionExchangeRates: (nextExchangeRates) => {
+    const next = isFunction(nextExchangeRates) ? nextExchangeRates(get().subscriptionExchangeRates) : nextExchangeRates;
+    const normalized = normalizeSubscriptionExchangeRates(next);
+    set({ subscriptionExchangeRates: normalized });
+    get().setItem('subscriptionExchangeRates', JSON.stringify(normalized));
+  },
+
   setCustomSettings: (nextCustomSettings) => {
     const next = isFunction(nextCustomSettings) ? nextCustomSettings(get().customSettings) : nextCustomSettings;
     set({ customSettings: next });
@@ -852,7 +890,10 @@ export const useStorageStore = create((set, get) => ({
       else if (key === 'cs2Prices') set({ cs2Prices: parsed });
       else if (key === 'cs2PurchasePrices') set({ cs2PurchasePrices: parsed });
       else if (key === 'cs2Snapshots') set({ cs2Snapshots: isArray(parsed) ? parsed : [] });
-      else if (key === 'customSettings') set({ customSettings: parsed });
+      else if (key === 'subscriptions') set({ subscriptions: normalizeSubscriptions(parsed) });
+      else if (key === 'subscriptionExchangeRates') {
+        set({ subscriptionExchangeRates: normalizeSubscriptionExchangeRates(parsed) });
+      } else if (key === 'customSettings') set({ customSettings: parsed });
       else if (key === 'fundDailyEarnings') set({ fundDailyEarnings: parsed });
       else if (key === 'fundDividends') set({ fundDividends: parsed });
       else if (key === 'localSortBy') set({ sortBy: parsed });

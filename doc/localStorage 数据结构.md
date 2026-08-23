@@ -868,6 +868,7 @@ const SYNC_KEYS = new Set([
   'pendingTrades',
   'transactions',
   'dcaPlans',
+  'subscriptions',
   'customSettings',
   'fundDailyEarnings'
 ]);
@@ -1058,11 +1059,11 @@ const SYNC_KEYS = new Set([
 ## `assetDashboardType` - 当前资产看板
 
 - **类型**: `string`
-- **可选值**: `fund`、`stock`、`gold`、`cs2`
+- **可选值**: `fund`、`stock`、`gold`、`cs2`、`subscription`
 - **默认值**: `fund`
 - **云端同步**: 否
 
-记录用户最后选择的“基金 / 股票 / 黄金 / CS2”看板，仅作为当前设备的界面偏好。
+记录用户最后选择的“基金 / 股票 / 黄金 / CS2 / 订阅”看板，仅作为当前设备的界面偏好。
 
 ## `bankGoldHolding` - 银行积存金持仓
 
@@ -1085,10 +1086,44 @@ const SYNC_KEYS = new Set([
 - `bankGoldQuote` 仅是本地行情缓存，不进入云端同步或导入导出。
 - 所有读写通过 `storageStore` / `useStorageStore` 完成。
 
+## `subscriptions` - 个人订阅记录
+
+- **类型**: `Array<Object>`
+- **默认值**: `[]`
+- **云端同步 / 导入导出**: 是
+
+```javascript
+[
+  {
+    id: 'uuid',
+    name: 'ChatGPT Plus',
+    category: 'AI 工具',
+    price: 20,
+    currency: 'USD',
+    billingCycle: 'monthly',
+    customDays: null,
+    nextRenewalDate: '2026-08-28',
+    autoRenew: true,
+    status: 'active',
+    paymentMethod: 'Visa',
+    notes: '',
+    exchangeRateOverride: null,
+    createdAt: 1787479200000,
+    updatedAt: 1787479200000
+  }
+]
+```
+
+- `billingCycle` 支持 `weekly`、`monthly`、`quarterly`、`yearly`、`custom`。
+- `status` 支持 `active`、`trial`、`paused`、`cancelled`。
+- `subscriptionExchangeRates` 保存 USD/HKD 对人民币的最近汇率，只作为设备本地缓存，不进入云端同步。
+- 外币订阅优先使用 `exchangeRateOverride`，未设置时使用自动汇率。
+
 ---
 
 ## 更新日志
 
+- **2026-08-23**: 新增个人订阅支出看板；`subscriptions` 纳入 Supabase 云同步与本地导入导出，汇率缓存保持设备本地。
 - **2026-08-14**: 补充 CS2 本地数据结构；`cs2Prices` 新增轻量 `history` 快照，用于按同平台历史售价计算 24h 涨跌。
 - **2026-08-12**: 股票看板升级为完整版：新增多市场分组、交易与分红记录、分时 / 日 K 图表、基金与股票统一资产概览；`stocks`、`stockGroups`、`stockTransactions`、`stockDividends` 纳入 Supabase 云同步及本地导入导出。
 - **2026-05-25**: 检查并更新 `funds` 基金数据结构，详尽补充基金对象所有可能的属性字段（如 `lastNav`, `zzl`, `yesterdayZzl`, `yesterdayNavDelta`, `noValuation`, `valuationSource`, `dataSource`, `addedAt`, `addBaseNav`, `addBaseDate` 等），剔除了非实际存在的 legacy `type` 字段，并修正 `dwjz` 的类型说明为字符串类型。

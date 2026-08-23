@@ -1,10 +1,21 @@
 'use client';
 
-import { CandlestickChart, CircleDollarSign, Gem, Landmark } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { CalendarSync, CandlestickChart, CircleDollarSign, Gem, Landmark } from 'lucide-react';
 
 export default function AssetTypeSwitch({ value = 'fund', onChange }) {
+  const switchRef = useRef(null);
+
+  useEffect(() => {
+    const container = switchRef.current;
+    const activeButton = container?.querySelector('[aria-selected="true"]');
+    if (!container || !activeButton || container.scrollWidth <= container.clientWidth) return;
+    const targetLeft = activeButton.offsetLeft - (container.clientWidth - activeButton.clientWidth) / 2;
+    container.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+  }, [value]);
+
   return (
-    <div className="asset-type-switch" role="tablist" aria-label="资产类型">
+    <div ref={switchRef} className="asset-type-switch" role="tablist" aria-label="资产类型">
       <button
         type="button"
         role="tab"
@@ -44,6 +55,16 @@ export default function AssetTypeSwitch({ value = 'fund', onChange }) {
       >
         <Gem size={14} aria-hidden="true" />
         <span>CS2</span>
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={value === 'subscription'}
+        className={`asset-type-switch__button ${value === 'subscription' ? 'active' : ''}`}
+        onClick={() => onChange?.('subscription')}
+      >
+        <CalendarSync size={14} aria-hidden="true" />
+        <span>订阅</span>
       </button>
     </div>
   );

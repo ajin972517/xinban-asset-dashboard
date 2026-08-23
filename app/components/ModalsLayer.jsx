@@ -24,6 +24,7 @@ const AddHistoryModal = dynamic(() => import('./AddHistoryModal'), { ssr: false 
 const AllSectorsModal = dynamic(() => import('./AllSectorsModal'), { ssr: false });
 const DividendMethodModal = dynamic(() => import('./DividendMethodModal'), { ssr: false });
 const FundSignalConfigModal = dynamic(() => import('./FundSignalConfigModal'), { ssr: false });
+const SubscriptionEditorModal = dynamic(() => import('./SubscriptionEditorModal'), { ssr: false });
 
 // 高频组件：同步加载
 import ConfirmModal from './ConfirmModal';
@@ -128,6 +129,10 @@ function ModalsLayerContent({ callbacksRef }) {
   const successModal = useModalStore((s) => s.successModal);
   const cloudConfigModal = useModalStore((s) => s.cloudConfigModal);
   const deviceConflictModal = useModalStore((s) => s.deviceConflictModal);
+  const subscriptionEditorModal = useModalStore((s) => s.subscriptionEditorModal);
+  const subscriptionDeleteConfirm = useModalStore((s) => s.subscriptionDeleteConfirm);
+  const subscriptions = useStorageStore((s) => s.subscriptions);
+  const setSubscriptions = useStorageStore((s) => s.setSubscriptions);
 
   // Scan
   const scanModalOpen = useModalStore((s) => s.scanModalOpen);
@@ -161,6 +166,10 @@ function ModalsLayerContent({ callbacksRef }) {
   const setSuccessModal = (v) => _ms({ successModal: isFunction(v) ? v(_gs().successModal) : v });
   const setCloudConfigModal = (v) => _ms({ cloudConfigModal: isFunction(v) ? v(_gs().cloudConfigModal) : v });
   const setDeviceConflictModal = (v) => _ms({ deviceConflictModal: isFunction(v) ? v(_gs().deviceConflictModal) : v });
+  const setSubscriptionEditorModal = (v) =>
+    _ms({ subscriptionEditorModal: isFunction(v) ? v(_gs().subscriptionEditorModal) : v });
+  const setSubscriptionDeleteConfirm = (v) =>
+    _ms({ subscriptionDeleteConfirm: isFunction(v) ? v(_gs().subscriptionDeleteConfirm) : v });
   const setFundDeleteConfirm = (v) => _ms({ fundDeleteConfirm: isFunction(v) ? v(_gs().fundDeleteConfirm) : v });
   const setFundDeleteBulkConfirm = (v) =>
     _ms({ fundDeleteBulkConfirm: isFunction(v) ? v(_gs().fundDeleteBulkConfirm) : v });
@@ -192,6 +201,40 @@ function ModalsLayerContent({ callbacksRef }) {
 
   return (
     <>
+      {/* ===== Modal: 订阅编辑 ===== */}
+      <AnimatePresence>
+        {subscriptionEditorModal.open && (
+          <SubscriptionEditorModal
+            subscription={subscriptions.find((item) => item.id === subscriptionEditorModal.subscriptionId) || null}
+            onClose={() => setSubscriptionEditorModal({ open: false, subscriptionId: null })}
+            onSave={(nextSubscription) => {
+              setSubscriptions((current) => {
+                const exists = current.some((item) => item.id === nextSubscription.id);
+                return exists
+                  ? current.map((item) => (item.id === nextSubscription.id ? nextSubscription : item))
+                  : [...current, nextSubscription];
+              });
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ===== Modal: 订阅删除确认 ===== */}
+      <AnimatePresence>
+        {subscriptionDeleteConfirm && (
+          <ConfirmModal
+            title="删除订阅"
+            message={`确定删除「${subscriptionDeleteConfirm.name}」吗？此操作只删除本地记录，不会取消服务商的实际订阅。`}
+            confirmText="确定删除"
+            onConfirm={() => {
+              setSubscriptions((current) => current.filter((item) => item.id !== subscriptionDeleteConfirm.id));
+              setSubscriptionDeleteConfirm(null);
+            }}
+            onCancel={() => setSubscriptionDeleteConfirm(null)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* ===== Modal: 删除确认 ===== */}
       <AnimatePresence>
         {fundDeleteConfirm && (

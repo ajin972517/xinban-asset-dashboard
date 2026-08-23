@@ -10,6 +10,7 @@ import AssetTypeSwitch from './components/AssetTypeSwitch';
 import StockDashboard from './components/StockDashboard';
 import StockHeaderSearch from './components/StockHeaderSearch';
 import UnifiedAssetOverview from './components/UnifiedAssetOverview';
+import SubscriptionDashboard from './components/SubscriptionDashboard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
@@ -403,14 +404,25 @@ export default function HomePage() {
   useEffect(() => {
     const savedAssetType = storageStore.getItem('assetDashboardType', 'fund');
     setAssetType(
-      savedAssetType === 'stock' || savedAssetType === 'gold' || savedAssetType === 'cs2' ? savedAssetType : 'fund'
+      savedAssetType === 'stock' ||
+        savedAssetType === 'gold' ||
+        savedAssetType === 'cs2' ||
+        savedAssetType === 'subscription'
+        ? savedAssetType
+        : 'fund'
     );
   }, []);
 
   const handleAssetTypeChange = useCallback((nextAssetType) => {
     const normalized =
-      nextAssetType === 'stock' || nextAssetType === 'gold' || nextAssetType === 'cs2' ? nextAssetType : 'fund';
+      nextAssetType === 'stock' ||
+      nextAssetType === 'gold' ||
+      nextAssetType === 'cs2' ||
+      nextAssetType === 'subscription'
+        ? nextAssetType
+        : 'fund';
     setAssetType(normalized);
+    if (normalized === 'subscription') setMainTab('home');
     setIsSearchFocused(false);
     storageStore.setItem('assetDashboardType', normalized);
   }, []);
@@ -3867,6 +3879,8 @@ export default function HomePage() {
         cs2Prices: storageStore.getItem('cs2Prices', {}),
         cs2PurchasePrices: storageStore.getItem('cs2PurchasePrices', {}),
         cs2Snapshots: storageStore.getItem('cs2Snapshots', []),
+        subscriptions: storageStore.getItem('subscriptions', []),
+        subscriptionExchangeRates: storageStore.getItem('subscriptionExchangeRates', {}),
         customSettings: customSettings || {},
         fundDailyEarnings,
         exportedAt: nowInTz().toISOString()
@@ -4023,6 +4037,23 @@ export default function HomePage() {
             'cs2Snapshots',
             JSON.stringify(Array.from(byDate.values()).sort((a, b) => String(a.date).localeCompare(String(b.date))))
           );
+        }
+
+        if (isArray(data.subscriptions)) {
+          const currentSubscriptions = storageStore.getItem('subscriptions', []);
+          const byId = new Map(
+            (isArray(currentSubscriptions) ? currentSubscriptions : [])
+              .filter((subscription) => subscription?.id)
+              .map((subscription) => [String(subscription.id), subscription])
+          );
+          data.subscriptions.forEach((subscription) => {
+            if (!subscription?.id) return;
+            byId.set(String(subscription.id), subscription);
+          });
+          storageStore.setItem('subscriptions', JSON.stringify(Array.from(byId.values())));
+        }
+        if (isPlainObject(data.subscriptionExchangeRates)) {
+          storageStore.setItem('subscriptionExchangeRates', JSON.stringify(data.subscriptionExchangeRates));
         }
 
         let mergedFunds = currentFunds;
@@ -4908,7 +4939,7 @@ export default function HomePage() {
               />
             </div>
           </div>
-          {shouldShowMarketIndex && assetType !== 'cs2' && (
+          {shouldShowMarketIndex && assetType !== 'cs2' && assetType !== 'subscription' && (
             <MarketIndexAccordion
               navbarHeight={navbarHeight}
               onCustomSettingsChange={triggerCustomSettingsSync}
@@ -4918,6 +4949,8 @@ export default function HomePage() {
           <div style={{ display: mainTab === 'home' ? 'contents' : 'none' }}>
             {assetType === 'cs2' ? (
               <Cs2InventoryDashboard masked={maskAmounts} fundSummary={summaryTabPortfolioTotals} />
+            ) : assetType === 'subscription' ? (
+              <SubscriptionDashboard masked={maskAmounts} />
             ) : assetType === 'gold' ? (
               <BankGoldDashboard masked={maskAmounts} fundSummary={summaryTabPortfolioTotals} />
             ) : assetType === 'stock' ? (

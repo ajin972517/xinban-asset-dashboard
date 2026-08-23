@@ -27,6 +27,7 @@ import {
   toTz
 } from '../lib/fundHelpers';
 import { calculateYtdReturnRate, mergeAllScopedDailyEarnings, mergeAllHoldings } from '../lib/dailyEarnings';
+import { normalizeSubscriptions } from '../lib/subscriptions';
 
 export const normalizeFundDailyEarningsScoped = (source) => {
   if (!isPlainObject(source)) return {};
@@ -367,6 +368,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
           manualPriceUpdatedAt: Number(payload.bankGoldHolding.manualPriceUpdatedAt) || 0
         }
       : {};
+    const subscriptions = normalizeSubscriptions(payload.subscriptions);
     const customSettings = isPlainObject(payload.customSettings) ? payload.customSettings : {};
     const fundDailyEarningsSource = normalizeFundDailyEarningsScoped(payload.fundDailyEarnings);
     const fundDailyEarningsSig = Object.keys(fundDailyEarningsSource)
@@ -420,6 +422,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
       stockTransactions,
       stockDividends,
       bankGoldHolding,
+      subscriptions,
       customSettings,
       fundDailyEarningsSig
     });
@@ -488,6 +491,9 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
       }
       if (!keys || keys.has('bankGoldHolding')) {
         all.bankGoldHolding = storageStore.getItem('bankGoldHolding', {});
+      }
+      if (!keys || keys.has('subscriptions')) {
+        all.subscriptions = storageStore.getItem('subscriptions', []);
       }
       if (!keys || keys.has('customSettings')) {
         all.customSettings = storageStore.getItem('customSettings', {});
@@ -685,6 +691,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
           stockTransactions: isPlainObject(all.stockTransactions) ? all.stockTransactions : {},
           stockDividends: isPlainObject(all.stockDividends) ? all.stockDividends : {},
           bankGoldHolding: isPlainObject(all.bankGoldHolding) ? all.bankGoldHolding : {},
+          subscriptions: normalizeSubscriptions(all.subscriptions),
           customSettings: isPlainObject(all.customSettings) ? all.customSettings : {},
           fundDailyEarnings: cleanedFundDailyEarnings,
           fundValuationTimeseries: isPlainObject(all.fundValuationTimeseries) ? all.fundValuationTimeseries : {},
@@ -731,6 +738,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
         stockTransactions: {},
         stockDividends: {},
         bankGoldHolding: {},
+        subscriptions: [],
         customSettings: {},
         exportedAt: nowInTz().toISOString()
       };
@@ -956,6 +964,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
       'pendingTrades',
       'dcaPlans',
       'fundSignalConfigs',
+      'subscriptions',
       'customSettings',
       'fundDailyEarnings'
     ]);
@@ -1222,6 +1231,13 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
           useStorageStore
             .getState()
             .setBankGoldHolding(isPlainObject(localBankGoldHolding) ? localBankGoldHolding : {});
+        }
+
+        if (hasOwn(cloudData, 'subscriptions')) {
+          useStorageStore.getState().setSubscriptions(normalizeSubscriptions(cloudData.subscriptions));
+        } else {
+          const localSubscriptions = storageStore.getItem('subscriptions', []);
+          useStorageStore.getState().setSubscriptions(normalizeSubscriptions(localSubscriptions));
         }
 
         const cloudDaily = normalizeFundDailyEarningsScoped(cloudData.fundDailyEarnings);
