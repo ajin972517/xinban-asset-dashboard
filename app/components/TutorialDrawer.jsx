@@ -19,7 +19,7 @@ export default function TutorialDrawer({ open, onOpenChange }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <iframe
-                src="https://www.yuque.com/u267605/ookgim/im06q8tembbld6im?singleDoc"
+                src="https://github.com/ajin972517/xinban-asset-dashboard/blob/main/doc/%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9.md"
                 style={{ width: '100%', height: '100%', border: 'none' }}
                 frameBorder={0}
                 allowFullScreen

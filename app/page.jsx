@@ -89,6 +89,9 @@ import {
   DEFAULT_FUND_TAG_THEME
 } from '@/app/constants';
 
+const HELP_DOCUMENT_URL =
+  'https://github.com/ajin972517/xinban-asset-dashboard/blob/main/doc/%E4%BD%BF%E7%94%A8%E5%B8%AE%E5%8A%A9.md';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isSameOrAfter);
@@ -347,7 +350,6 @@ export default function HomePage() {
     _ms({ portfolioEarningsOpen: isFunction(v) ? v(_gs().portfolioEarningsOpen) : v });
   const setMobileFundDrawerOpen = (v) =>
     _ms({ mobileFundDrawerOpen: isFunction(v) ? v(_gs().mobileFundDrawerOpen) : v });
-  const setTutorialDrawerOpen = (v) => _ms({ tutorialDrawerOpen: isFunction(v) ? v(_gs().tutorialDrawerOpen) : v });
   const setUpdateLogOpen = (v) => _ms({ updateLogOpen: isFunction(v) ? v(_gs().updateLogOpen) : v });
   const setMobileTableSettingModalOpen = (v) =>
     _ms({ mobileTableSettingModalOpen: isFunction(v) ? v(_gs().mobileTableSettingModalOpen) : v });
@@ -4951,13 +4953,7 @@ export default function HomePage() {
                 onOpenLogin={handleOpenLogin}
                 onLogout={handleLogout}
                 onLogoutConfirmOpenChange={setIsLogoutConfirmOpen}
-                onTutorial={() => {
-                  if (isMobile) {
-                    setTutorialDrawerOpen(true);
-                  } else {
-                    window.open('https://www.yuque.com/u267605/ookgim/im06q8tembbld6im?singleDoc', '_blank');
-                  }
-                }}
+                onTutorial={() => window.open(HELP_DOCUMENT_URL, '_blank', 'noopener,noreferrer')}
                 onUpdateLog={() => setUpdateLogOpen(true)}
               />
             </div>
@@ -5619,13 +5615,7 @@ export default function HomePage() {
           lastSyncDisplay={lastSyncTime ? dayjs(lastSyncTime).format('MM-DD HH:mm') : null}
           onLogin={handleOpenLogin}
           onMyEarnings={() => setPortfolioEarningsOpen(true)}
-          onTutorial={() => {
-            if (isMobile) {
-              setTutorialDrawerOpen(true);
-            } else {
-              window.open('https://www.yuque.com/u267605/ookgim/im06q8tembbld6im?singleDoc', '_blank');
-            }
-          }}
+          onTutorial={() => window.open(HELP_DOCUMENT_URL, '_blank', 'noopener,noreferrer')}
           onUpdateLog={() => setUpdateLogOpen(true)}
           onFeedback={() => {
             if (!user?.id) {

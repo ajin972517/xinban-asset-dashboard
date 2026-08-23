@@ -11,6 +11,17 @@ import { withRetry } from '@/app/lib/asyncHelper';
 
 const LOCAL_RELEASES = [
   {
+    id: 'v2.5.1-xinban',
+    name: 'v2.5.1 · 使用帮助',
+    tag_name: 'v2.5.1',
+    published_at: '2026-08-23T21:30:00+08:00',
+    body: [
+      '1. 新增适用于基金、股票、银行黄金、CS2 饰品和个人订阅的完整使用帮助。',
+      '2. 桌面端与移动端的“使用帮助”入口改为打开 GitHub 中持续维护的文档。',
+      '3. 项目版本升级至 2.5.1，为正式发行做准备。'
+    ].join('\n')
+  },
+  {
     id: 'v2.5.0-xinban',
     name: 'v2.5.0 · 全资产云同步',
     tag_name: 'v2.5.0',
