@@ -4866,13 +4866,19 @@ export default function HomePage() {
             >
               <UpdateChecker onModalOpenChange={setIsUpdateModalOpen} />
               <span className="github-icon-wrap">
-                <Image
-                  unoptimized
-                  alt="项目Github地址"
-                  src={githubImg}
-                  style={{ width: '30px', height: '30px', cursor: 'pointer' }}
-                  onClick={() => window.open('https://github.com/hzm0321/real-time-fund')}
-                />
+                <a
+                  href="https://github.com/ajin972517/xinban-asset-dashboard"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="打开项目 GitHub 仓库"
+                >
+                  <Image
+                    unoptimized
+                    alt="项目Github地址"
+                    src={githubImg}
+                    style={{ width: '30px', height: '30px', cursor: 'pointer' }}
+                  />
+                </a>
               </span>
               {isMobile && (assetType === 'fund' || (assetType === 'stock' && mainTab === 'market')) && (
                 <Tooltip>

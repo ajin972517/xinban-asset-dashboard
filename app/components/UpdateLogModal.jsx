@@ -77,7 +77,7 @@ export default function UpdateLogModal({ open, onOpenChange }) {
         try {
           const data = await withRetry(
             async () => {
-              const res = await fetch('https://api.github.com/repos/hzm0321/real-time-fund/releases');
+              const res = await fetch('https://api.github.com/repos/ajin972517/xinban-asset-dashboard/releases');
               if (!res.ok) throw new Error('Failed to fetch releases');
               return res.json();
             },

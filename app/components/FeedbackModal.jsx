@@ -143,7 +143,7 @@ export default function FeedbackModal({ onClose, user, onOpenWeChat }) {
               <p className="muted" style={{ fontSize: '12px', lineHeight: '1.6' }}>
                 如果您有 Github 账号，也可以在本项目
                 <a
-                  href="https://github.com/hzm0321/real-time-fund/issues"
+                  href="https://github.com/ajin972517/xinban-asset-dashboard/issues"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="link-button"
