@@ -9773,6 +9773,382 @@ html::-webkit-scrollbar-thumb:active,
   padding-top: calc(var(--navbar-height, 64px) + 16px);
 }
 
+.subscription-market-page {
+  padding-top: calc(var(--navbar-height, 64px) + 16px);
+}
+
+.subscription-market-hero,
+.subscription-market-metric,
+.subscription-market-catalog {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+.subscription-market-hero {
+  min-height: 142px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.subscription-market-hero::after {
+  width: 280px;
+  height: 280px;
+  position: absolute;
+  right: -80px;
+  top: -150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 25%, transparent), transparent 68%);
+  content: '';
+  pointer-events: none;
+}
+
+.subscription-market-hero__content,
+.subscription-market-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.subscription-market-hero h1 {
+  margin: 7px 0 5px;
+  color: var(--text);
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.subscription-market-hero p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.subscription-market-source {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.subscription-market-source small {
+  padding-left: 8px;
+  border-left: 1px solid var(--border);
+}
+
+.subscription-market-actions {
+  display: flex;
+  gap: 9px;
+  flex-shrink: 0;
+}
+
+.subscription-market-actions button,
+.subscription-market-actions a {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.subscription-market-actions button:hover,
+.subscription-market-actions a:hover {
+  border-color: color-mix(in srgb, var(--primary) 60%, var(--border));
+  color: var(--primary);
+}
+
+.subscription-market-actions button:disabled {
+  opacity: 0.62;
+  cursor: wait;
+}
+
+.subscription-market-spin {
+  animation: subscription-market-spin 0.8s linear infinite;
+}
+
+@keyframes subscription-market-spin {
+  to { transform: rotate(360deg); }
+}
+
+.subscription-market-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.subscription-market-metric {
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 16px 18px;
+}
+
+.subscription-market-metric > svg {
+  width: 36px;
+  height: 36px;
+  padding: 9px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--primary) 13%, transparent);
+  color: var(--primary);
+}
+
+.subscription-market-metric div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.subscription-market-metric strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 19px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subscription-market-metric span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.subscription-market-catalog {
+  padding: 20px;
+  overflow: hidden;
+}
+
+.subscription-market-toolbar {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(240px, 360px) 130px;
+  align-items: center;
+  gap: 12px;
+}
+
+.subscription-market-toolbar > div > span {
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.subscription-market-toolbar h2 {
+  margin: 3px 0 0;
+  color: var(--text);
+  font-size: 20px;
+}
+
+.subscription-market-search {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.subscription-market-search:focus-within {
+  border-color: var(--primary);
+}
+
+.subscription-market-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.subscription-market-toolbar select {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  outline: none;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.subscription-market-categories {
+  display: flex;
+  gap: 7px;
+  margin: 18px -20px 14px;
+  padding: 0 20px 4px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.subscription-market-categories button {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.subscription-market-categories button:hover,
+.subscription-market-categories button.is-active {
+  border-color: color-mix(in srgb, var(--primary) 58%, transparent);
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--primary);
+}
+
+.subscription-market-table {
+  min-width: 860px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.subscription-market-table__head,
+.subscription-market-row {
+  display: grid;
+  grid-template-columns: minmax(240px, 1.5fr) minmax(105px, 0.75fr) minmax(105px, 0.75fr) minmax(105px, 0.75fr) minmax(110px, 0.7fr) minmax(104px, 0.65fr);
+  align-items: center;
+  gap: 14px;
+  padding: 0 17px;
+}
+
+.subscription-market-table__head {
+  min-height: 42px;
+  background: color-mix(in srgb, var(--surface-2) 80%, transparent);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.subscription-market-row {
+  min-height: 78px;
+  border-top: 1px solid var(--border);
+}
+
+.subscription-market-row:nth-child(odd) {
+  background: color-mix(in srgb, var(--surface-2) 35%, transparent);
+}
+
+.subscription-market-service,
+.subscription-market-update {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.subscription-market-service > span {
+  color: var(--primary);
+  font-size: 10px;
+}
+
+.subscription-market-service strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subscription-market-service small,
+.subscription-market-update small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.subscription-market-price {
+  color: var(--text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.subscription-market-update strong {
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--primary) 13%, transparent);
+  color: var(--primary);
+  font-size: 11px;
+}
+
+.subscription-market-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--primary);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.subscription-market-link a span {
+  max-width: 82px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subscription-market-link > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.subscription-market-mobile-list {
+  display: none;
+}
+
+.subscription-market-state {
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.subscription-market-state.is-error {
+  flex-direction: column;
+  color: var(--danger);
+}
+
+.subscription-market-state button {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.subscription-market-disclaimer {
+  margin: 14px 2px 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
 .asset-market-intro,
 .cs2-market-hero,
 .stock-market-watchlist,
@@ -10360,6 +10736,182 @@ html::-webkit-scrollbar-thumb:active,
 
   .cs2-market-page {
     padding-top: calc(var(--navbar-height, 64px) + 10px);
+  }
+
+  .subscription-market-page {
+    padding-top: calc(var(--navbar-height, 64px) + 10px);
+  }
+
+  .subscription-market-hero {
+    min-height: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .subscription-market-hero h1 {
+    font-size: 20px;
+  }
+
+  .subscription-market-actions {
+    width: 100%;
+  }
+
+  .subscription-market-actions button,
+  .subscription-market-actions a {
+    flex: 1;
+  }
+
+  .subscription-market-source {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .subscription-market-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .subscription-market-metric {
+    min-height: 76px;
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  .subscription-market-metric > svg {
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+  }
+
+  .subscription-market-metric strong {
+    font-size: 15px;
+  }
+
+  .subscription-market-catalog {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .subscription-market-toolbar {
+    grid-template-columns: minmax(0, 1fr) 112px;
+  }
+
+  .subscription-market-toolbar > div {
+    grid-column: 1 / -1;
+  }
+
+  .subscription-market-toolbar h2 {
+    font-size: 18px;
+  }
+
+  .subscription-market-search input,
+  .subscription-market-toolbar select {
+    font-size: 16PX;
+  }
+
+  .subscription-market-categories {
+    margin-right: -16px;
+    margin-left: -16px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .subscription-market-table {
+    display: none;
+  }
+
+  .subscription-market-mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .subscription-market-card {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: color-mix(in srgb, var(--surface-2) 46%, transparent);
+  }
+
+  .subscription-market-card header,
+  .subscription-market-card footer {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .subscription-market-card header div {
+    min-width: 0;
+  }
+
+  .subscription-market-card header span {
+    color: var(--primary);
+    font-size: 10px;
+  }
+
+  .subscription-market-card h3 {
+    margin: 3px 0 1px;
+    color: var(--text);
+    font-size: 15px;
+  }
+
+  .subscription-market-card header small,
+  .subscription-market-card footer {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .subscription-market-card header em {
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--primary) 13%, transparent);
+    color: var(--primary);
+    font-size: 10px;
+    font-style: normal;
+  }
+
+  .subscription-market-card__prices {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+    margin: 12px 0;
+  }
+
+  .subscription-price-cell {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 9px;
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--surface) 66%, transparent);
+  }
+
+  .subscription-price-cell span {
+    color: var(--muted);
+    font-size: 10px;
+  }
+
+  .subscription-price-cell strong {
+    overflow-wrap: anywhere;
+    color: var(--text);
+    font-size: 12px;
+  }
+
+  .subscription-market-card footer {
+    padding-top: 11px;
+    border-top: 1px solid var(--border);
+  }
+
+  .subscription-market-card footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--primary);
+    text-decoration: none;
   }
 
   .asset-market-intro,

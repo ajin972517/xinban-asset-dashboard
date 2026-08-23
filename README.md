@@ -74,6 +74,8 @@ CS2 云端服务默认只允许一个配置好的 SteamID64 使用，以保护 S
 - 支持使用中、试用中、暂停、取消状态
 - 订阅记录支持本地保存、导入导出和 Supabase 云同步
 - 汇率按日更新并保留设备本地缓存，可为单条订阅设置手动汇率
+- 独立订阅行情页，支持按分类、币种和关键词查询会员价格
+- 公共价格表保存在 `public/data/subscription-prices.md`，网页优先读取 GitHub `main` 分支，失败时回退到随网站发布的副本
 
 ## 二、页面结构
 
@@ -92,7 +94,8 @@ CS2 云端服务默认只允许一个配置好的 SteamID64 使用，以保护 S
 │  ├─ 首页：Steam 库存、报价和饰品明细
 │  └─ 行情：SteamDT 大盘、走势、库存估值和高市值饰品
 └─ 订阅
-   └─ 首页：持续性支出、汇率换算、续费日期和订阅明细
+   ├─ 首页：持续性支出、汇率换算、续费日期和订阅明细
+   └─ 行情：会员价格、分类/币种筛选和官方购买入口
 ```
 
 行情分流入口是 `app/components/AssetMarketTab.jsx`：
@@ -101,6 +104,7 @@ CS2 云端服务默认只允许一个配置好的 SteamID64 使用，以保护 S
 - 股票：`app/components/StockMarketTab.jsx`
 - 黄金：`app/components/BankGoldDashboard.jsx`
 - CS2：`app/components/Cs2MarketTab.jsx`
+- 订阅：`app/components/SubscriptionMarketTab.jsx`
 
 ## 三、技术架构
 
@@ -144,6 +148,7 @@ flowchart LR
 | 股票          | 腾讯财经、东方财富           | 股票报价、指数、分时、K 线与行业板块 |
 | CS2 库存      | Steam Community 公开库存     | 饰品清单、图片和公开属性             |
 | CS2 价格/大盘 | SteamDT 开放平台             | 多平台报价、大盘指数与走势           |
+| 订阅会员价格  | 仓库公开 Markdown 价格表     | 会员价格、币种、更新时间和购买入口   |
 | 交易日        | `chinese-days` + jsDelivr    | 中国交易日和节假日判断               |
 
 这些公开接口可能调整、限流或暂时不返回某一资产数据。单项数据缺失不一定表示整个项目故障。

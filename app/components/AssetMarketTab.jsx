@@ -3,6 +3,7 @@
 import FundMarketTab from './MarketTab';
 import StockMarketTab from './StockMarketTab';
 import Cs2MarketTab from './Cs2MarketTab';
+import SubscriptionMarketTab from './SubscriptionMarketTab';
 import { BankGoldMarketTab } from './BankGoldDashboard';
 
 export default function AssetMarketTab({ assetType, onAddFund, getFundCardProps, isActive }) {
@@ -16,6 +17,10 @@ export default function AssetMarketTab({ assetType, onAddFund, getFundCardProps,
 
   if (assetType === 'gold') {
     return <BankGoldMarketTab isActive={isActive} />;
+  }
+
+  if (assetType === 'subscription') {
+    return <SubscriptionMarketTab isActive={isActive} />;
   }
 
   return <FundMarketTab onAddFund={onAddFund} getFundCardProps={getFundCardProps} isActive={isActive} />;
