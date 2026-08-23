@@ -868,9 +868,20 @@ const SYNC_KEYS = new Set([
   'pendingTrades',
   'transactions',
   'dcaPlans',
+  'fundSignalConfigs',
+  'stocks',
+  'stockGroups',
+  'stockTransactions',
+  'stockDividends',
+  'bankGoldHolding',
+  'cs2Settings',
+  'cs2Inventory',
+  'cs2PurchasePrices',
+  'cs2Snapshots',
   'subscriptions',
   'customSettings',
-  'fundDailyEarnings'
+  'fundDailyEarnings',
+  'fundDividends'
 ]);
 ```
 
@@ -895,6 +906,8 @@ const SYNC_KEYS = new Set([
 7. **公告版本清理**: Announcement 组件会自动清理旧版本的公告关闭标记
 8. **fundDailyEarnings 作用域**: 当前版本使用按作用域分桶结构（`{ [scope]: { [code]: [...] } }`），旧版扁平格式会自动迁移
 9. **导入合并而非覆盖**: 导入操作始终采用合并策略，不会删除本地已有数据
+10. **登录自动同步**: 登录后自动读取完整云端配置；云端为空时自动上传本机数据，不再要求手动确认空配置。
+11. **缓存不入云**: `bankGoldQuote`、`cs2Prices`、`subscriptionExchangeRates` 属于可重新获取的行情或汇率缓存，不进入云同步。
 
 ---
 
@@ -1124,6 +1137,7 @@ const SYNC_KEYS = new Set([
 ## 更新日志
 
 - **2026-08-23**: 新增个人订阅支出看板；`subscriptions` 纳入 Supabase 云同步与本地导入导出，汇率缓存保持设备本地。
+- **2026-08-23**: 升级 v2.5.0 全资产云同步；登录自动拉取/补齐云端数据，CS2 设置、库存、购入成本和估值快照纳入同步。
 - **2026-08-14**: 补充 CS2 本地数据结构；`cs2Prices` 新增轻量 `history` 快照，用于按同平台历史售价计算 24h 涨跌。
 - **2026-08-12**: 股票看板升级为完整版：新增多市场分组、交易与分红记录、分时 / 日 K 图表、基金与股票统一资产概览；`stocks`、`stockGroups`、`stockTransactions`、`stockDividends` 纳入 Supabase 云同步及本地导入导出。
 - **2026-05-25**: 检查并更新 `funds` 基金数据结构，详尽补充基金对象所有可能的属性字段（如 `lastNav`, `zzl`, `yesterdayZzl`, `yesterdayNavDelta`, `noValuation`, `valuationSource`, `dataSource`, `addedAt`, `addBaseNav`, `addBaseDate` 等），剔除了非实际存在的 legacy `type` 字段，并修正 `dwjz` 的类型说明为字符串类型。

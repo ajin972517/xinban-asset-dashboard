@@ -2904,9 +2904,14 @@ export default function HomePage() {
         setLoginModalOpen(false);
         setLoginInitialError('');
       }
-      // 仅在明确的登录动作（SIGNED_IN）时检查冲突；INITIAL_SESSION（刷新页面等）不检查，直接以云端为准
-      fetchCloudConfig(session.user.id, isExplicitLogin, {
-        refreshAfterApply: event === 'INITIAL_SESSION'
+      // 登录后直接拉取完整云端配置；云端为空时自动上传本机数据。
+      // 明确登录会接管当前设备并回写完整载荷，让新增资产类型自动补齐到旧账号云端数据中。
+      fetchCloudConfig(session.user.id, false, {
+        refreshAfterApply: event === 'INITIAL_SESSION',
+        forceTakeover: isExplicitLogin || event === 'INITIAL_SESSION',
+        silentTakeover: true,
+        autoSyncEmpty: true,
+        showLoginSyncTip: isExplicitLogin
       });
     };
 

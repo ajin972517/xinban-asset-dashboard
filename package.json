@@ -1,6 +1,6 @@
 {
   "name": "real-time-fund",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "基于基估宝二次开发的基金、股票、银行积存金、CS2 与个人订阅综合看板",
   "private": true,
   "scripts": {

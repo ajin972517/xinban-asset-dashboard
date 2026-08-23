@@ -368,7 +368,12 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
           manualPriceUpdatedAt: Number(payload.bankGoldHolding.manualPriceUpdatedAt) || 0
         }
       : {};
+    const cs2Settings = isPlainObject(payload.cs2Settings) ? payload.cs2Settings : {};
+    const cs2Inventory = isPlainObject(payload.cs2Inventory) ? payload.cs2Inventory : {};
+    const cs2PurchasePrices = isPlainObject(payload.cs2PurchasePrices) ? payload.cs2PurchasePrices : {};
+    const cs2Snapshots = isArray(payload.cs2Snapshots) ? payload.cs2Snapshots : [];
     const subscriptions = normalizeSubscriptions(payload.subscriptions);
+    const fundDividends = isPlainObject(payload.fundDividends) ? payload.fundDividends : {};
     const customSettings = isPlainObject(payload.customSettings) ? payload.customSettings : {};
     const fundDailyEarningsSource = normalizeFundDailyEarningsScoped(payload.fundDailyEarnings);
     const fundDailyEarningsSig = Object.keys(fundDailyEarningsSource)
@@ -422,7 +427,12 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
       stockTransactions,
       stockDividends,
       bankGoldHolding,
+      cs2Settings,
+      cs2Inventory,
+      cs2PurchasePrices,
+      cs2Snapshots,
       subscriptions,
+      fundDividends,
       customSettings,
       fundDailyEarningsSig
     });
@@ -492,8 +502,23 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
       if (!keys || keys.has('bankGoldHolding')) {
         all.bankGoldHolding = storageStore.getItem('bankGoldHolding', {});
       }
+      if (!keys || keys.has('cs2Settings')) {
+        all.cs2Settings = storageStore.getItem('cs2Settings', {});
+      }
+      if (!keys || keys.has('cs2Inventory')) {
+        all.cs2Inventory = storageStore.getItem('cs2Inventory', {});
+      }
+      if (!keys || keys.has('cs2PurchasePrices')) {
+        all.cs2PurchasePrices = storageStore.getItem('cs2PurchasePrices', {});
+      }
+      if (!keys || keys.has('cs2Snapshots')) {
+        all.cs2Snapshots = storageStore.getItem('cs2Snapshots', []);
+      }
       if (!keys || keys.has('subscriptions')) {
         all.subscriptions = storageStore.getItem('subscriptions', []);
+      }
+      if (!keys || keys.has('fundDividends')) {
+        all.fundDividends = storageStore.getItem('fundDividends', {});
       }
       if (!keys || keys.has('customSettings')) {
         all.customSettings = storageStore.getItem('customSettings', {});
@@ -691,7 +716,12 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
           stockTransactions: isPlainObject(all.stockTransactions) ? all.stockTransactions : {},
           stockDividends: isPlainObject(all.stockDividends) ? all.stockDividends : {},
           bankGoldHolding: isPlainObject(all.bankGoldHolding) ? all.bankGoldHolding : {},
+          cs2Settings: isPlainObject(all.cs2Settings) ? all.cs2Settings : {},
+          cs2Inventory: isPlainObject(all.cs2Inventory) ? all.cs2Inventory : {},
+          cs2PurchasePrices: isPlainObject(all.cs2PurchasePrices) ? all.cs2PurchasePrices : {},
+          cs2Snapshots: isArray(all.cs2Snapshots) ? all.cs2Snapshots : [],
           subscriptions: normalizeSubscriptions(all.subscriptions),
+          fundDividends: isPlainObject(all.fundDividends) ? all.fundDividends : {},
           customSettings: isPlainObject(all.customSettings) ? all.customSettings : {},
           fundDailyEarnings: cleanedFundDailyEarnings,
           fundValuationTimeseries: isPlainObject(all.fundValuationTimeseries) ? all.fundValuationTimeseries : {},
@@ -738,7 +768,12 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
         stockTransactions: {},
         stockDividends: {},
         bankGoldHolding: {},
+        cs2Settings: {},
+        cs2Inventory: {},
+        cs2PurchasePrices: {},
+        cs2Snapshots: [],
         subscriptions: [],
+        fundDividends: {},
         customSettings: {},
         exportedAt: nowInTz().toISOString()
       };
@@ -962,11 +997,22 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
       'holdings',
       'groupHoldings',
       'pendingTrades',
+      'transactions',
       'dcaPlans',
       'fundSignalConfigs',
+      'stocks',
+      'stockGroups',
+      'stockTransactions',
+      'stockDividends',
+      'bankGoldHolding',
+      'cs2Settings',
+      'cs2Inventory',
+      'cs2PurchasePrices',
+      'cs2Snapshots',
       'subscriptions',
       'customSettings',
-      'fundDailyEarnings'
+      'fundDailyEarnings',
+      'fundDividends'
     ]);
     const onStorage = (e) => {
       if (!e.key) return;
@@ -1233,11 +1279,54 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
             .setBankGoldHolding(isPlainObject(localBankGoldHolding) ? localBankGoldHolding : {});
         }
 
+        if (hasOwn(cloudData, 'cs2Settings')) {
+          useStorageStore.getState().setCs2Settings(isPlainObject(cloudData.cs2Settings) ? cloudData.cs2Settings : {});
+        } else {
+          const localCs2Settings = storageStore.getItem('cs2Settings', {});
+          useStorageStore.getState().setCs2Settings(isPlainObject(localCs2Settings) ? localCs2Settings : {});
+        }
+
+        if (hasOwn(cloudData, 'cs2Inventory')) {
+          useStorageStore
+            .getState()
+            .setCs2Inventory(isPlainObject(cloudData.cs2Inventory) ? cloudData.cs2Inventory : {});
+        } else {
+          const localCs2Inventory = storageStore.getItem('cs2Inventory', {});
+          useStorageStore.getState().setCs2Inventory(isPlainObject(localCs2Inventory) ? localCs2Inventory : {});
+        }
+
+        if (hasOwn(cloudData, 'cs2PurchasePrices')) {
+          useStorageStore
+            .getState()
+            .setCs2PurchasePrices(isPlainObject(cloudData.cs2PurchasePrices) ? cloudData.cs2PurchasePrices : {});
+        } else {
+          const localCs2PurchasePrices = storageStore.getItem('cs2PurchasePrices', {});
+          useStorageStore
+            .getState()
+            .setCs2PurchasePrices(isPlainObject(localCs2PurchasePrices) ? localCs2PurchasePrices : {});
+        }
+
+        if (hasOwn(cloudData, 'cs2Snapshots')) {
+          useStorageStore.getState().setCs2Snapshots(isArray(cloudData.cs2Snapshots) ? cloudData.cs2Snapshots : []);
+        } else {
+          const localCs2Snapshots = storageStore.getItem('cs2Snapshots', []);
+          useStorageStore.getState().setCs2Snapshots(isArray(localCs2Snapshots) ? localCs2Snapshots : []);
+        }
+
         if (hasOwn(cloudData, 'subscriptions')) {
           useStorageStore.getState().setSubscriptions(normalizeSubscriptions(cloudData.subscriptions));
         } else {
           const localSubscriptions = storageStore.getItem('subscriptions', []);
           useStorageStore.getState().setSubscriptions(normalizeSubscriptions(localSubscriptions));
+        }
+
+        if (hasOwn(cloudData, 'fundDividends')) {
+          useStorageStore
+            .getState()
+            .setFundDividends(isPlainObject(cloudData.fundDividends) ? cloudData.fundDividends : {});
+        } else {
+          const localFundDividends = storageStore.getItem('fundDividends', {});
+          useStorageStore.getState().setFundDividends(isPlainObject(localFundDividends) ? localFundDividends : {});
         }
 
         const cloudDaily = normalizeFundDailyEarningsScoped(cloudData.fundDailyEarnings);
@@ -1363,7 +1452,7 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
           const currentUser = useUserStore.getState().user;
           const currentUserId = options.userId || userIdRef.current || currentUser?.id;
           if (currentUserId) {
-            await syncUserConfig(currentUserId, true, null, false, { forceTakeover: true });
+            await syncUserConfig(currentUserId, !options.silentTakeover, null, false, { forceTakeover: true });
           }
         }
 
@@ -1423,6 +1512,11 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
             supabase.from('user_configs').insert({ user_id: userId })
           );
           if (insertError) throw insertError;
+          if (options.autoSyncEmpty) {
+            await syncUserConfig(userId, false, null, false, { forceTakeover: true });
+            if (options.showLoginSyncTip) showToast('云端为空，已上传本机全部资产数据', 'success');
+            return;
+          }
           useModalStore.setState({ cloudConfigModal: { open: true, userId, type: 'empty' } });
           return;
         }
@@ -1434,16 +1528,22 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
 
         if (meta.data && isPlainObject(meta.data) && Object.keys(meta.data).length > 0) {
           await applyCloudConfig(meta.data, meta.updated_at, { ...options, userId });
+          if (options.showLoginSyncTip) showToast('已从云端同步全部资产数据', 'success');
           return;
         }
 
+        if (options.autoSyncEmpty) {
+          await syncUserConfig(userId, false, null, false, { forceTakeover: true });
+          if (options.showLoginSyncTip) showToast('云端为空，已上传本机全部资产数据', 'success');
+          return;
+        }
         useModalStore.setState({ cloudConfigModal: { open: true, userId, type: 'empty' } });
       } catch (e) {
         console.error('获取云端配置失败', e);
         skipSyncRef.current = false;
       }
     },
-    [applyCloudConfig]
+    [applyCloudConfig, showToast, syncUserConfig]
   );
 
   // --- handleSyncLocalConfig ---
